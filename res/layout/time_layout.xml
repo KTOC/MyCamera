@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="right"
+    android:orientation="horizontal" >
+   <TextView android:id="@+id/tv_time"
+        android:layout_width="@dimen/tv_time_width"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/icon1_space"
+        android:textColor="@color/red"
+        android:visibility="gone"
+        android:textSize="18sp"
+        android:text="@string/default_time"
+        />
+
+    <ImageView
+        android:id="@+id/iv_time_icon0" 
+        android:layout_width="@dimen/iv_time_icon_width"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/icon0_space"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/camera_rec"
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        />
+    
+    <ImageView 
+        android:id="@+id/iv_time_icon1" 
+        android:layout_width="@dimen/iv_time_icon_width"
+        android:layout_alignParentRight="true"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:src="@drawable/camera_rec"
+        android:scaleType="fitCenter"
+        />
+</RelativeLayout>

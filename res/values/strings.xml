@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">testRecorder</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    
+    <string name="file_title">File manager</string>
+    <string name="setting_title">Setting</string>
+    <string name="storage_location">Storage location</string>
+    <string name="video_duration">Video duration</string>
+    <string name="video_duration_dec">"Each video duration, current for %s minutes."</string>
+    <string name="no_limit">No time limit</string>
+    <string name="clean_setting">Clear setting</string>
+    <string name="clean_time">Clear by time</string>
+    <string name="clean_size">上锁区域循环删除</string>
+    <string name="clean_time_dec_default">Automatic clearance provides days before the shooting videos and photos</string>
+    <string name="clean_size_dec_default">在存储空间低于 %1$s MB,且上锁区域视频占比超过%2$s %%时，删除此区域较早的文件</string>
+    <string name="clean_time_dec">"Automatic clearance %s days before the shooting videos and photos"</string>
+    <string name="clean_size_dec">"When the file space occupied by shooting greater than %s MB, clear the earlier video and photos"</string>
+    <string name="clean_time_setting">"       Clear time settings"</string>
+    <string name="clean_size_setting">"       Space setting"</string>
+    <string name="clean_size_setting_dec">"           %1$s %%"</string>
+    <string name="power_on">Boot start</string>
+    <string name="power_on_dec">When the boot automatically start shooting video</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="storage_inand">Internal storage</string>
+    <string name="storage_sdcard">SD card</string>
+    <string name="defaule_time">"00:00"</string>
+    <string name="start_camera_error">"Unable to start the camera"</string>
+    <string name="start_record_error">"Unable to start the camera，error %d"</string>
+    <string name="no_files">"Haven't taken a photo or video"</string>
+    <string name="input_tip">"Enter 1 to integer between %d"</string>
+    <string name="back_running">"Running"</string>
+    <string name="back_record">"Recording the video"</string>
+    <string name="ok">"OK"</string>
+    <string name="cancel">"Cancel"</string>
+    <string name="recording_tips">"Are video broadcast video will stop recording, do you want to continue?"</string>
+    <string name="recording_tips_ext">"Cannot play back the video when recording"</string>
+    <string name="delete_tips">"delete this record?"</string>
+    <string name="delete_all_tips">"Delete all records?"</string>
+    <string name="delete_select_tips">"Delete selected %d records?"</string>
+    <string name="delete_noselect_tips">"Please select the records you want to delete"</string>
+    <string name="no_more_space">"The remaining space is less than 100MB, please free some storage space and try again"</string>
+    <string name="no_space">"The remaining space is insufficient, please free some storage space and try again"</string>
+    <string name="no_device">"No image signal, please check the vehicle traveling data recorder camera is installed properly"</string>
+    <string name="total_space">"All space：%d MB"</string>
+    <string name="free_space">"Free space：%d MB"</string>
+    <string name="file_inuse">"The file is in use, can not be deleted"</string>
+    <string name="sd_pull_off">"%1$s does not exist, the storage space for the %2$s switch"</string>
+    <string name="luying">"Record"</string>
+    <string name="zhaoxiang">"Capture"</string>
+    <string name="wenjian">"File"</string>
+    <string name="shezhi">"Setting</string>
+	<string name="file_photos">"Photos"</string>
+	<string name="file_videos">"Videos"</string>
+	<string name="no_camera_hint_ok_button">OK</string>
+    <string name="no_camera_hint_title">Camera device does not exist</string>
+    <string name="no_camera_hint_text">Please insert Camera device into usb socket, and then use this application.</string>
+    <string name="select_title">Please select operation</string>
+    <string name="select_all">Select all</string>
+    <string name="unselect_all">Unselect all</string>
+    <string name="reverse_selection">Reverse selection</string>
+    <string name="mirror_image">Mirror preview image</string>
+    <string name="mirror_image_tip">The preview image of camera display mirror or not</string>
+    <string name="no_storage_tips">No external storage devices, can not start the video</string>
+    <string name="no_storage_hint_title">Storage device does not exist</string>
+    <string name="no_storage_hint_text">No detectable storage devices %s, please insert the storage device, and then use the recorder software.</string>
+    <string name="recording_continue">"Continue"</string>
+    
+    <string name="no_available_storage">存储设备已移除，当前无可用的存储空间！</string>
+	<string name="change_storage">当前存储设备已变更！</string>
+	<string name="not_find_usb">未检测到usb摄像头</string>
+	<string name="cannot_connect_camera">摄像头已断开连接</string>
+	
+	<!-- Camera format string for new image files. Passed to java.text.SimpleDateFormat. -->
+    <string name="image_cvbs_file_name_format" translatable="false">"'IMGC'_yyyyMMdd_HHmmssSSS"</string>
+    <!-- Camera format string for new image files. Passed to java.text.SimpleDateFormat. -->
+    <string name="image_usb_file_name_format" translatable="false">"'IMGU'_yyyyMMdd_HHmmssSSS"</string>
+    <!-- Camera format string for new image files. Passed to java.text.SimpleDateFormat. -->
+    <string name="image_360_file_name_format" translatable="false">"'IMGG'_yyyyMMdd_HHmmssSSS"</string>
+
+    <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
+    <string name="video_common_cvbs_file_name_format" translatable="false">"'VIDC'_'T'%1$04d_yyyyMMdd_HHmmss"</string>
+    <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
+    <string name="video_common_usb_file_name_format" translatable="false">"'VIDU'_'T'%1$04d_yyyyMMdd_HHmmss"</string>
+    <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
+    <string name="video_common_360_file_name_format" translatable="false">"'VIDG'_'T'%1$04d_yyyyMMdd_HHmmss"</string>
+    
+     <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
+    <string name="video_lock_cvbs_file_name_format" translatable="false">"'VIDC'_'L'%1$04d_yyyyMMdd_HHmmss"</string>
+    <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
+    <string name="video_lock_usb_file_name_format" translatable="false">"'VIDU'_'L'%1$04d_yyyyMMdd_HHmmss"</string>
+    <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
+    <string name="video_lock_360_file_name_format" translatable="false">"'VIDG'_'L'%1$04d_yyyyMMdd_HHmmss"</string>
+	<!-- The message shown when video record reaches size limit. -->
+    <string name="video_reach_size_limit">Size limit reached.</string>
+    
+   <string name="lock_string">Lock Video</string>
+   <string name="common_string">Common Video</string>
+   <string name="other_string">Other</string>
+   <string name="space_string">Free space</string>
+   
+   <string  name="info_ok_str">ok</string>
+   <string  name="info_delete_all">Delete All</string>
+   <string  name="enter_folder_str">Folder</string>
+   <string name="watch_video">Videos</string>
+   <string  name="if_Show_Info_str">Not show again until restored from Settings</string>
+   <string  name="if_Delete_lock_str">Cycle delete lock video files</string>
+   <string  name="dialog_alert_title">ALERT</string>
+   <string  name="delete_all_sure">Are you sure to delete all videos?</string>
+   <string  name="delete_sure">Only effected until the size of locked videos reach the value which set by you. This operation is sensitive, need to be confirmed again!</string>
+
+   <string  name="tips_str">Tips</string>
+   <string  name="dir_first_str">Threshold Percentage of Lock Area is %1$02d %%.</string>
+   <string  name="dir_second_str">Current Video Path : %1$s</string>
+   
+   <string name="sd_no_space_by_other">&#160;&#160;&#160;&#160;No enough memory by other Directory except LY_DVR,are you going to delete them?</string>
+   <string name="sd_no_space_by_lock">&#160;&#160;&#160;&#160;Too many  locked vedios,please delete it  to release memory by yourself!</string>
+   <string name="dialog_msg_jump_to_file">"jump to File Manager to free space?"</string>
+   <string name="dialog_ok">OK</string>
+   <string name="dialog_cancel">Cancel</string>
+   <string name="str_settings">Settings</string>
+   <string name="str_lock">Lock</string>
+   <string name="str_record">Record</string>
+   <string name="str_photo">Photo</string>
+   <string name="str_fold">Folder</string>
+   <string name="default_time">00:00</string>
+   <string name="shoule_not_stop_immediately">Please do not click it frequently!</string>
+   
+    <string name="preview_size">预览分辨率</string>
+    <string name="preview_frame_rate">预览帧率</string>
+    <string name="video_size">录像分辨率</string>
+    <string name="video_frame_rate">录像帧率</string>
+    <string name="str_null">Null</string>
+    <string name="str_unmounted">[当前未挂载]</string>
+    <string name="str_lock_invaild">请不要在上锁目录存放其它无关文件！</string>
+    <string name="str_title">提示</string>
+    <string name="str_jump_to_settings_message">是否停止录制，前往设置界面！</string>
+    
+    <string name="str_file_lock">Lock</string>
+    <string name="str_file_360">360</string>
+    <string name="str_file_usb">Usb</string>
+    <string name="str_file_cvbs">Cvbs</string>
+    <string name="str_file_pic">Pic</string>
+    
+    <string name="str_total_space_size">总空间</string>
+    <string name="str_free_space_size">剩余空间</string>
+    <string name="str_zero">0 M</string>
+    <string name="str_select_all">全选</string>
+    <string name="str_select_reverse">反选</string>
+    <string name="str_space_not_enough">space is not enough!</string>
+    <string name="str_not_find_External_memory">Not find available External_memory!</string> 
+    <string name="str_deleting">Deleting,wait please~</string>
+    <string name="str_cannot_lock_as_not_recording">Can not lock the video as not in the recording state!</string>
+</resources>

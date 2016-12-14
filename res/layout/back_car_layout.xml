@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.test.ReverseLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <TextureView 
+        android:id="@+id/reverse_texture"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        />
+    
+	<com.example.test.MyRadarSurfaceView 
+	    android:layout_height="wrap_content"
+	    android:layout_width="@dimen/radar_width"
+	    android:layout_alignParentLeft="true"
+	    android:layout_centerVertical="true"
+	    android:visibility="gone"
+	    android:id="@+id/reverse_radar"
+	    />
+    <ImageView 
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_height="@dimen/reverse_aux_line_height"
+        android:layout_width="@dimen/reverse_aux_line_width"
+        android:src="@drawable/eps00"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        android:id="@+id/reverse_aux_line_standard"
+        />
+    <ImageView 
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_height="@dimen/reverse_aux_line_height"
+        android:layout_width="@dimen/reverse_aux_line_width"
+        android:src="@drawable/eps00"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        android:id="@+id/reverse_aux_line_angle"
+        />
+    
+</com.example.test.ReverseLayout>

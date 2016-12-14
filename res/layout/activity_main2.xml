@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <TextureView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/textureView0"
+        />
+
+    <TextureView 
+        android:layout_width="320dp"
+        android:layout_height="240dp"
+        android:id="@+id/textureView1"
+        android:layout_gravity="top|right"        
+        />
+    
+    <LinearLayout
+        android:id="@+id/container" 
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        ></LinearLayout>
+</FrameLayout>

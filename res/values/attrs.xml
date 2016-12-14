@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        
+    <declare-styleable   name="ProgressView">
+         <attr name="LineWidth"    format="integer"/>
+         <attr name="LineHeight"    format="integer"/>
+         <attr name="SpcaeColor"    format="reference|color"/>
+         <attr name="LockColor"    format="reference|color"/>
+         <attr name="VIDColor"    format="reference|color"/>
+         <attr name="OtherColor"    format="reference|color"/>
+    </declare-styleable>
+</resources>

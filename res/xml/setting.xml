@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:dialogTitle="@string/storage_location"
+        android:key="storage_list"
+        android:title="@string/storage_location" />
+
+    <EditTextPreference
+        android:dialogTitle="@string/video_duration"
+        android:key="video_duration"
+        android:title="@string/video_duration" />
+
+<!--     <CheckBoxPreference
+        android:key="clean_time"
+        android:title="@string/clean_time" />
+
+    <EditTextPreference
+        android:dialogTitle="@string/clean_time_setting"
+        android:key="clean_time_setting"
+        android:title="@string/clean_time_setting" /> -->
+
+    <CheckBoxPreference
+        android:key="clean_size"
+        android:title="@string/clean_size" />
+
+    <EditTextPreference
+        android:dialogTitle="@string/clean_size_setting"
+        android:key="clean_size_setting"
+        android:title="@string/clean_size_setting" />
+
+    <CheckBoxPreference
+        android:key="mirror_image"
+        android:summary="@string/mirror_image_tip"
+        android:title="@string/mirror_image" />
+    
+    <CheckBoxPreference
+        android:key="power_on"
+        android:summary="@string/power_on_dec"
+        android:title="@string/power_on" />
+    
+    <ListPreference
+        android:dialogTitle="@string/preview_size"
+        android:key="preview_size"
+        android:title="@string/preview_size" />
+
+    <EditTextPreference
+        android:dialogTitle="@string/preview_frame_rate"
+        android:key="preview_frame_rate"
+        android:title="@string/preview_frame_rate" />
+
+    <ListPreference
+        android:dialogTitle="@string/video_size"
+        android:key="video_size"
+        android:title="@string/video_size" />
+
+    <EditTextPreference
+        android:dialogTitle="@string/video_frame_rate"
+        android:key="video_frame_rate"
+        android:title="@string/video_frame_rate" />
+
+</PreferenceScreen>
