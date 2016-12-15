@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    
+    <LinearLayout 
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+        <ImageView 
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/iv_status"
+            android:src="@drawable/ic_all_select"
+            android:scaleType="fitCenter"
+            android:background="@drawable/tran_org_bg"
+            />
+        
+    </LinearLayout>
+    
+    <View 
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        />
+
+    <LinearLayout 
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+        <ImageView 
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/iv_fold"
+            android:src="@drawable/ic_launcher"
+            android:scaleType="fitCenter"
+            android:background="@drawable/tran_org_bg"
+            />
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+        <ImageView 
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/iv_lock"
+            android:src="@drawable/lock_grey"
+            android:scaleType="fitCenter"
+            android:background="@drawable/tran_org_bg"
+            />
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+        <ImageView 
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/iv_record"
+            android:src="@drawable/camera_start_record"
+            android:scaleType="fitCenter"
+            android:background="@drawable/tran_org_bg"
+            />
+        
+    </LinearLayout>
+
+    <LinearLayout 
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+        <ImageView 
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/iv_settings"
+            android:src="@drawable/ic_set_press"
+            android:scaleType="fitCenter"
+            android:background="@drawable/tran_org_bg"
+            />
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+        <ImageView 
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/iv_display"
+            android:src="@drawable/ly_brightness_3"
+            android:scaleType="fitCenter"
+            android:background="@drawable/tran_org_bg"
+            />
+        
+    </LinearLayout>
+
+</LinearLayout>

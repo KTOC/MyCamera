@@ -7,18 +7,22 @@ public class CameraHolder {
 	}
 	
 	public static int getCvbsCameraId(){
-		return 4;
-	}
-	
-	public static int getGlobalCameraId(){
-		return 100;
-	}
-	
-	public static int getLeftCameraId(){
 		return 5;
 	}
 	
-	public static int getRightCameraId(){
+	public static int getGlobalCameraId(){
+		return 3;
+	}
+	
+	public static int getLeftCameraId(){
 		return 6;
+	}
+	
+	public static int getRightCameraId(){
+		return 4;
+	}
+	
+	public static int getFrontCvbsCameraId(){
+		return 7;
 	}
 }

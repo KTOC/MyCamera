@@ -5,15 +5,20 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.android.allwinnertech.libaw360.api.AW360API;
+import com.example.test.BaseActivity;
 import com.example.test.R;
+import com.example.test.Helper.CameraMode;
 import com.example.test.Helper.ToastUtils;
 import com.example.test.settings.CameraSettings;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.os.storage.StorageManager;
@@ -38,6 +43,7 @@ public class MyApplication extends Application {
 	public static boolean DEFAULT_CLEAN_TIME_STATUS = true;
 	public static int DEFAULT_CLEAN_SPACE = 200;
 	public static final String DEFAULT_PATH = "/mnt/usbhost/Storage02";
+	public static final String KEY_LAST_PREVIEW_MODE = "preview_mode";
 	
 	public final static String CHANGE_STORAGE = "com.luyuan.drivingrecorder.changestorage"; //切换存储空间
 	
@@ -45,13 +51,19 @@ public class MyApplication extends Application {
 	
     public static int textureName = 1;
     
+    private List<Activity> mActivitys = new ArrayList<Activity>();
+    private MyActivityLifecycleCallback mMyActivityLifecycleCallback;
+    
+    
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		mContext = this;
-		
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		mMyActivityLifecycleCallback = new MyActivityLifecycleCallback();
+		registerActivityLifecycleCallbacks(mMyActivityLifecycleCallback);
 	}
 
 	public static Context getContext() {
@@ -67,7 +79,7 @@ public class MyApplication extends Application {
 	}
 	
 	public static String getAvailableStorage() {  //may be null
-		return getAvailableStorage1();
+		return getAvailableStorage0();
 	}
 	
 	private static String getAvailableStorage0(){
@@ -111,7 +123,7 @@ public class MyApplication extends Application {
 	}
 	
 	public static boolean isExternalStorageMounted(String path){
-		return isExternalStorageMounted1(path);
+		return isExternalStorageMounted0(path);
 	} 
 	
 	public static boolean isExternalStorageMounted0(String path){
@@ -237,6 +249,14 @@ public class MyApplication extends Application {
 				DEFAULT_VIDEO_DURATION);
 		return Integer.parseInt(value) * 60 * 1000;
 	}
+	
+	public static int getLastPreviewMode(){
+		return sharedPreferences.getInt(KEY_LAST_PREVIEW_MODE, CameraMode.MODE_PREVIEW_CA);
+	}
+	
+	public static void setCurrentPreviewMode(int mode){
+		sharedPreferences.edit().putInt(KEY_LAST_PREVIEW_MODE, mode).commit();
+	}
 
     public static boolean getMirror() {
         return sharedPreferences.getBoolean("mirror_image", DEFAULT_MIRROR_STATUS);
@@ -300,5 +320,101 @@ public class MyApplication extends Application {
 		}
 		return "";
 	}
+	
+    /**
+     * 添加activity到运行activity列表
+     * activity列表用于管理运行时activity。
+     * 以及推出应用
+     *
+     * @param activity
+     */
+    public void addActivity(BaseActivity activity) {
+        if (!mActivitys.contains(activity)) {
+            mActivitys.add(activity);
+        }
+    }
+
+    /**
+     * 退出应用
+     */
+    public void finishAllActivities() {
+        Log.i(TAG, "--------exitApp");
+        for (int i = 0; i < mActivitys.size(); i++) {
+            mActivitys.get(i).finish();
+        }
+
+        mActivitys.clear();
+    }
+    
+    private void pushActivity(Activity activity){
+    	if(activity instanceof BaseActivity){
+			mActivitys.add(activity);
+			Log.w(TAG, "add one activity,current size is "+mActivitys.size());
+		}else{
+			Log.w(TAG, "add,not child of baseActivity!");
+		}
+    }
+    
+    private void popActivity(Activity activity){
+    	if(activity instanceof BaseActivity){
+			mActivitys.remove(activity);
+			Log.w(TAG, "remove one activity,current size is "+mActivitys.size());
+		}else{
+			Log.w(TAG, "remove,not child of baseActivity!");
+		}
+    }
+    
+    @Override
+    public void onTerminate() {
+    	super.onTerminate();
+    	unregisterActivityLifecycleCallbacks(mMyActivityLifecycleCallback);
+    }
+    
+    private class MyActivityLifecycleCallback implements ActivityLifecycleCallbacks{
+
+		@Override
+		public void onActivityCreated(Activity activity,
+				Bundle savedInstanceState) {
+			pushActivity(activity);
+		}
+
+		@Override
+		public void onActivityStarted(Activity activity) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onActivityResumed(Activity activity) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onActivityPaused(Activity activity) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onActivityStopped(Activity activity) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onActivitySaveInstanceState(Activity activity,
+				Bundle outState) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onActivityDestroyed(Activity activity) {
+			popActivity(activity);
+		}
+    	
+    }
+
 	
 }

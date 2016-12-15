@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.util.EncodingUtils;
+//import org.apache.http.util.EncodingUtils;
 
 import com.example.test.app.MyApplication;
 
@@ -287,7 +287,7 @@ public class SettingActivity extends PreferenceActivity implements
 				MyApplication.DEFAULT_POWER_ON_STATUS));
 	}
 
-	public String readFile(String fileName) throws IOException {
+/*	public String readFile(String fileName) throws IOException {
 		String res = "";
 		try {
 			FileInputStream fin = new FileInputStream(fileName);
@@ -306,9 +306,9 @@ public class SettingActivity extends PreferenceActivity implements
 			e.printStackTrace();
 		}
 		return res;
-	}
+	}*/
 	
-	public ArrayList<String> loadSupportList(String FileName) {
+/*	public ArrayList<String> loadSupportList(String FileName) {
 		File file = new File(getFilesDir().getAbsolutePath() + "/" + FileName);
 		if (!file.exists()) {
 			return null;
@@ -328,7 +328,7 @@ public class SettingActivity extends PreferenceActivity implements
 		}
 		return null;
 
-	}
+	}*/
 	
 	@Override
 	public boolean onPreferenceChange(Preference preference, Object newValue) {

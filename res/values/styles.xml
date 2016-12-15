@@ -16,5 +16,64 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+        <style name="icon_size">
+        <item name="android:layout_width">@dimen/main_icon_size</item>
+        <item name="android:layout_height">@dimen/main_icon_size</item>
+        <item name="android:background">@null</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
+    <style name="normal_txt">
+        <item name="android:textSize">@dimen/normal_txt_size</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="select_txt">
+        <item name="android:textSize">@dimen/normal_txt_size</item>
+        <item name="android:textColor">@color/select_txt_c</item>
+    </style>
+
+    <style name="input_txt">
+        <item name="android:textSize">@dimen/normal_txt_size</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="input_key" parent="@style/input_txt">
+        <item name="android:background">@drawable/drawable_input_key</item>
+    </style>
+
+    <style name="controller_btn" parent="@style/normal_txt">
+        <item name="android:background">@drawable/drawable_btn</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
+    <style name="adjust_seekbar" parent="@android:style/Widget.SeekBar">
+        <item name="android:maxHeight">8.0dip</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">
+            @android:drawable/progress_indeterminate_horizontal
+        </item>
+        <item name="android:progressDrawable">@drawable/drawable_seekbar</item>
+        <item name="android:minHeight">8.0dip</item>
+        <item name="android:thumb">@drawable/drawable_thumb</item>
+        <item name="android:thumbOffset">10.0dip</item>
+        <item name="android:layout_width">300dp</item>
+    </style>
+
+    <style name="progress_txt">
+        <item name="android:textSize">@dimen/normal_txt_size</item>
+        <item name="android:textColor">@color/select_txt_c</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="bvDialog" parent="android:style/Theme.Dialog"></style>
+
+    <style name="selectDialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowTitleStyle">@style/input_txt</item>
+        <item name="android:windowBackground">@drawable/ic_keyboard_bg</item>
+    </style>
 
 </resources>

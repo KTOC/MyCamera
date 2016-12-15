@@ -104,4 +104,5 @@
 	<color name="preview_text">#ffff0000</color>
 	<color name="mode_cover_default_color">#191919</color>
 	<color name="recording_label_background_color">#77333333</color>
+	<color name="select_txt_c">#83E000</color>
 </resources>

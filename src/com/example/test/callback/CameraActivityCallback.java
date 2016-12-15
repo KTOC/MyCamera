@@ -9,4 +9,6 @@ public interface CameraActivityCallback {
 	void updateActivityUi(boolean recording,int cameraId,boolean cameraRecordingStatus,boolean lock,String time);
 	void finishActivity();
 	void updateActivityLockState(boolean lock);
+	void updateActivityBirdMode(boolean bird);
+	void updateActivityPreviewMode(int mode);
 }

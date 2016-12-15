@@ -1,6 +1,7 @@
 package com.example.test.Helper;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -47,18 +48,18 @@ public class CvbsHelper {
 	}
 	
 	public static void controlKernelExitFlag(){   //让内核倒车不再响应倒车事件
-		FileWriter mFileWriter = null;
+		BufferedWriter mBufferedWriter = null;
 		try{
-			mFileWriter = new FileWriter(KERNEL_EXIT_NODE);
-			mFileWriter.write("1");
-			mFileWriter.flush();
+			mBufferedWriter = new BufferedWriter(new FileWriter(KERNEL_EXIT_NODE));
+			mBufferedWriter.write("1");
+			mBufferedWriter.flush();
 			Thread.sleep(500);
 		}catch(Exception e){
 			Log.e(TAG, "set exit flag failed!");
 		}finally{
-			if(mFileWriter != null){
+			if(mBufferedWriter != null){
 				try {
-					mFileWriter.close();
+					mBufferedWriter.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

@@ -154,4 +154,161 @@
     <string name="str_not_find_External_memory">Not find available External_memory!</string> 
     <string name="str_deleting">Deleting,wait please~</string>
     <string name="str_cannot_lock_as_not_recording">Can not lock the video as not in the recording state!</string>
+
+    <!-- from 360 -->
+        <string name="panorama_calibrate_str">Calibrate Panorama</string>
+    <string name="car_width_str">Vehicle Width</string>
+    <string name="car_length_str">Vehicle Length</string>
+    <string name="rl_distance_str">LR FOV</string>
+    <string name="back_mirror">Back Mirrored</string>
+    <string name="car_type_str">Vehicle Logo</string>
+    <string name="view_range_str">View Range</string>
+    <string name="auto_calibrate_str">Auto Calibrate</string>
+    <string name="manu_calibrate_str">Auto Calibrate</string>
+    <string name="adjust_manual">Manual Calibrate</string>
+    <string name="fine_tune_str">Fine Tune</string>
+    <string name="input_passwd_str">Please input password</string>
+    <string name="passwd_error_str">password error</string>
+    <string name="cancel_str">Cancel</string>
+    <string name="ok_str">Ok</string>
+    <string name="back_str">Back</string>
+    <string name="clear_str">Clear</string>
+    <string name="front_camera_str">Front Camera</string>
+    <string name="behind_camera_str">Behind Camera</string>
+    <string name="left_camera_str">Left Camera</string>
+    <string name="right_camera_str">Right Camera</string>
+    <string name="center_x_str">Center：X</string>
+    <string name="center_y_str">Center：Y</string>
+    <string name="save_str">Save</string>
+    <string name="time_alert_str">System time is invalid and needs to set, otherwise no video recording?</string>
+    <string name="record_set_str">Video Settings</string>
+    <string name="channel_choice_str">Channel</string>
+    <string name="four_camera_str">Four Cameras</string>
+    <string name="storage_place_str">Save Path</string>
+    <string name="sdcard_str">SDcard</string>
+    <string name="time_set_str">Time Settings</string>
+    <string name="year_str">Year</string>
+    <string name="mounth_str">Month</string>
+    <string name="day_str">Day</string>
+    <string name="hour_str">Hour</string>
+    <string name="munite_str">Munite</string>
+    <string name="second_str">Second</string>
+    <string name="zero">0</string>
+    <string name="one">1</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+    <string name="four">4</string>
+    <string name="five">5</string>
+    <string name="six">6</string>
+    <string name="seven">7</string>
+    <string name="eight">8</string>
+    <string name="nine">9</string>
+    <string name="choice_str">Please Select</string>
+    <string name="control_set_str">Control Settings</string>
+    <string name="turn_control_str">Steering Control</string>
+    <string name="emergency_control_str">Emergency Control</string>
+    <string name="reverse_control_str">Reversing Control</string>
+    <string name="infrared_control_str">Infrared Control</string>
+    <string name="control_delay_str">Delay Setting</string>
+    <string name="video_synch_str">Display Sync</string>
+    <string name="driving_vibration_str">Driving Vibration</string>
+    <string name="display_set_str">Display Settings</string>
+    <string name="start_adjust_str">Adjust</string>
+    <string name="front_view_str">Front View</string>
+    <string name="behind_view_str">Behind View</string>
+    <string name="left_view_str">Left View</string>
+    <string name="right_view_str">Right View</string>
+    <string name="language_set_str">Language</string>
+    <string name="output_format_str">Output</string>
+    <string name="brightness_str">Luma</string>
+    <string name="color_str">Hue</string>
+    <string name="saturation_str">Saturation</string>
+    <string name="contrast_str">Contrast</string>
+    <string name="backup_alert_str">Backup settings right now？</string>
+    <string name="restore_alert_str">Are you sure to restore settings and reboot system？</string>
+    <string name="recover_alert_str">Are you sure to restore settings and reboot system？</string>
+    <string name="reboot_alert_str">Reboot system right now?</string>
+    <string name="format_alert_str">Format storage right now?</string>
+    <string name="backup_str">Backup</string>
+    <string name="restore_str">Restore</string>
+    <string name="backup_info_str">Backup</string>
+    <string name="restore_info_str">Restoring</string>
+    <string name="format_info_str">Formating</string>
+    <string name="convert_info_str">Moving</string>
+    <string name="error_backup_str">System backup failed!</string>
+    <string name="succeed_backup_str">System backup succeed!</string>
+    <string name="error_restore_str">System restore failed!</string>
+    <string name="succeed_restore_str">System restore succeed!</string>
+    <string name="error_format_str">Storage format failed!</string>
+    <string name="succeed_format_str">Storage format succeed!</string>
+    <string name="outer_storage_alert_str">outer storage unuseful!</string>
+    <string name="delete_str">Delete</string>
+    <string name="select_all_str">Select All</string>
+    <string name="normal_file_str">Normal Video List</string>
+    <string name="emergency_file_str">Emergency Video List</string>
+    <string name="no_video_str">No video play！</string>
+    <string name="error_video_play">Error on video playback, please check the SD card or USB device!</string>
+    <string name="upgrade_info_str">New upgrade image is found in the T-flash, upgrade now?</string>
+    <string name="set_date_failed_str">Failed to set the system date！</string>
+    <string name="set_time_failed_str">Failed to set the system time！</string>
+    <string name="set_time_success_str">Succeeded to set the system time</string>
+    <string name="video_play_over_str">Video playback is over"</string>
+    <string name="arm_upgrading_str">ARM upgrade start....</string>
+    <string name="calibrating_str">Calibrating</string>
+    <string name="deleting_str">Deleting</string>
+    <string name="view_adjust_save_alert_str">Are you sure to save current view settings？</string>
+    <string name="calibrate_save_alert_str">Are you sure to save current calibration settings?</string>
+    <string name="outer_storage_unuse_str">Outter storage device is unseful</string>
+    <string name="deletevideo_alert_str">Are you sure to delete the selected video file?</string>
+    <string name="savedata_succeed_str">save data succed</string>
+    <string name="savedata_failed_str">save data failed</string>
+    <string name="open_camera_failed_str">Open camera failed!</string>
+    <string name="preview_error_str">Preview failed!</string>
+    <string name="record_error_str">Record_failed!</string>
+    <string name="camera_idel_str">Camera idel!</string>
+    <string name="switch_str">Switching...</string>
+    <string name="need_reboot_alert_str">Need to reboot to take effect, reboot right now？</string>
+    <string name="loading_str">Loading</string>
+    <string name="to_emergency_str">To Emergency</string>
+    <string name="no_storage_str">Insert SD card or USB storage before using the camera.</string>
+    <string name="access_sd_error">Fatal error occurred while accessing SD card, please check or replace with new card, or reboot system to try repair...</string>
+    <string name="access_usb_error">Fatal error occurred while accessing USB device, please check or replace with new USB, or reboot system to try repair...</string>
+    <string name="low_sd_speed">SD card might be in malfunction because the writing speed is too slow, which might cause slow system response...</string>
+    <string name="low_usb_speed">USB device might be in malfunction because the writing speed is too slow, which might cause slow system response...</string>
+    <string name="spaceIsLow_sd_content">Your SD card is running out of space. Please delete emergency video files or other files.</string>
+    <string name="spaceIsLow_usb_content">Your USB storage is running out of space. Please delete emergency video files or other files.</string>
+    <string name="activation">Activation</string>
+    <string name="front">Front</string>
+    <string name="behind">Behind</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="to_right">Turn Right</string>
+    <string name="to_left">Turn Left</string>
+
+    <string name="calibrate_info">L:Length W:Width D1/D2:RLDistance</string>
+
+    <string name="surroundview_calibrate_str">SurroundView</string>
+    <string name="camera_calibrate_str">Camera</string>
+    <string name="system_set_str">System</string>
+
+    <string name="far_str">far</string>
+    <string name="middle_str">middle</string>
+    <string name="near_str">near</string>
+
+    <string name="suv_str">SUV</string>
+    <string name="car_str">Car</string>
+    <string name="pickup_str">Pickup</string>
+    <string name="mpv_str">MPV</string>
+
+    <string name="back_mirrored">Back Mirrored</string>
+    <string name="activation_str">Activation</string>
+    <string-array name="carTypes">
+        <item>SUV</item>
+        <item>CAR</item>
+        <item>PICKUP</item>
+        <item>MPV</item>
+    </string-array>
+    
+    <!-- end 360 -->
+
 </resources>

@@ -1,6 +1,7 @@
 package com.example.test;
 
 import com.example.test.callback.TextureViewCallback;
+import com.example.test.view.MyTouchTextureView;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,7 +21,7 @@ public class MainActivity3 extends Activity implements TextureViewCallback{
 	}
 
 	@Override
-	public void onClick() {
+	public void onShortClick() {
 		// TODO Auto-generated method stub
 		Log.w(TAG, "------onClick-------");
 		

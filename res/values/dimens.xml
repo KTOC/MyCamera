@@ -41,4 +41,22 @@
 	<dimen name="btn_file_textSize">18sp</dimen>
 	<dimen name="file_tv_stat_size">12sp</dimen>
 	<dimen name="btn_file_textSize2">15sp</dimen>
+	
+	<!-- from 360 -->
+    <dimen name="main_icon_size">60dp</dimen>
+    <dimen name="calibrate_height">480dp</dimen>
+    <dimen name="calibrate_c_width">145dp</dimen>
+    <dimen name="calibrate_margin">100dp</dimen>
+    <dimen name="calibrate_margin2">50dp</dimen>
+    <dimen name="min_height">80dp</dimen>
+    <dimen name="keyboard_width">600dp</dimen>
+    <dimen name="keyboard_height">400dp</dimen>
+    <dimen name="keyboard_margin">2dp</dimen>
+
+    <dimen name="normal_txt_size">28sp</dimen>
+    <dimen name="seekbar_height">10dp</dimen>
+    <dimen name="dialog_width">500dp</dimen>
+    <dimen name="dialog_height">500dp</dimen>
+    <dimen name="dialog_content_height">200dp</dimen>
+    <!-- end 360 -->
 </resources>

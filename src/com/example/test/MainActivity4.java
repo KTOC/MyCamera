@@ -1,5 +1,7 @@
 package com.example.test;
 
+import com.example.test.view.MyRadarSurfaceView;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;

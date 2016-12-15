@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.net.ssl.HandshakeCompletedListener;
 
+import com.android.allwinnertech.libaw360.api.AW360API;
 import com.example.test.Helper.CameraHolder;
 import com.example.test.Helper.CameraMode;
 import com.example.test.Helper.CameraUtils;
@@ -36,6 +37,9 @@ import com.example.test.callback.CallbackForReverseLayout;
 import com.example.test.callback.CameraActivityCallback;
 import com.example.test.file.MyCleanInvalidFilesRunnable;
 import com.example.test.settings.CameraSettings;
+import com.example.test.view.AlertViewByLock;
+import com.example.test.view.AlertViewByOther;
+import com.example.test.view.ReverseLayout;
 import com.luyuan.drivingrecorder.CameraDetect;
 import com.luyuan.lydetect.lydetect;
 
@@ -133,7 +137,6 @@ public class CameraMainService extends Service{
 	private CameraActivityCallback mCameraActivityCallback;
 	private int mRotation;
 	private int mDisplayOrientation;
-	private long dateTime;
 	private boolean mRecordingLock = false;
     private int minCommonIndexNum = -1;
     private int maxCommonIndexNum = -1;
@@ -189,7 +192,9 @@ public class CameraMainService extends Service{
     private MyExternelStorageBroadcastReceiver mExternelStorageBroadcastReceiver;
     private Object mIndexLock = new Object();
     private Object[] mOpenCloseLock;
-
+    private int mCurrentPreviewMode = -1;
+    private boolean mIsBirdMode = false;
+    private boolean testBack = false;
     
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -361,12 +366,8 @@ public class CameraMainService extends Service{
 				new CameraOpenThread(CameraHolder.getUsbCameraId()).start();
 			}
 			new CameraOpenThread(CameraHolder.getCvbsCameraId()).start();
-		}else if(mCurrentCameraMode == CameraMode.MODE_INT_USB_360){
-			if(mCameraDetect.isUvcCameraConnected() != 1 ){
-				mHandler.obtainMessage(MSG_FIND_USB).sendToTarget();
-			}else{
-				new CameraOpenThread(CameraHolder.getUsbCameraId()).start();
-			}
+		}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
+			new CameraOpenThread(CameraHolder.getGlobalCameraId()).start();
 		}else{
 			
 		}
@@ -380,12 +381,8 @@ public class CameraMainService extends Service{
 				openCamera(CameraHolder.getUsbCameraId(),needRecord,needReverse);
 			}
 			openCamera(CameraHolder.getCvbsCameraId(),needRecord,needReverse);
-		}else if(mCurrentCameraMode == CameraMode.MODE_INT_USB_360){
-			if(mCameraDetect.isUvcCameraConnected() != 1 ){
-				mHandler.obtainMessage(MSG_FIND_USB).sendToTarget();
-			}else{
-				openCamera(CameraHolder.getUsbCameraId(),needRecord,needReverse);
-			}
+		}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
+			openCamera(CameraHolder.getGlobalCameraId(), needRecord, needReverse);
 		}else{
 			
 		}
@@ -401,18 +398,25 @@ public class CameraMainService extends Service{
 				Camera temp = mCameras[cameraId];
 				if(temp != null){
 					Log.w(TAG, "yet open !sync lock camera: "+cameraId+" eixt");
-				}
-				try{
-					mCameras[cameraId] = Camera.open(cameraId);
-					Log.w(TAG, "open camera "+cameraId+" success");
 					re = true;
-				}catch(Exception e){
-					re = false;
-					handleWhenCameraOpenFailed(cameraId,needRecord,needReverse);
-					mCameras[cameraId] = null;
-					return re;
+				}else{
+					try{
+						if(cameraId == CameraHolder.getGlobalCameraId()){
+							mCameras[cameraId] = Camera.open360();
+							AW360API.getInstance(mContext).init(mCameras[cameraId]);
+						}else{
+							mCameras[cameraId] = Camera.open(cameraId);
+						}
+						Log.w(TAG, "open camera "+cameraId+" success");
+						re = true;
+					}catch(Exception e){
+						re = false;
+						handleWhenCameraOpenFailed(cameraId,needRecord,needReverse);
+						mCameras[cameraId] = null;
+						return re;
+					}
+					Log.w(TAG, "sync lock camera: "+cameraId+" eixt");
 				}
-				Log.w(TAG, "sync lock camera: "+cameraId+" eixt");
 			}
 		}
 		handleWhenCameraOpenSuccess(cameraId,needRecord,needReverse);
@@ -435,6 +439,10 @@ public class CameraMainService extends Service{
 			Camera temp = mCameras[cameraId];
 			if(temp == null){
 				Log.w(TAG, "yet close, sync lock camera "+cameraId+" exit");
+				return;
+			}
+			if(cameraId == CameraHolder.getGlobalCameraId()){
+				AW360API.getInstance(mContext).release();
 			}
 			mCameras[cameraId].setErrorCallback(null);
 			mCameras[cameraId].release();
@@ -452,11 +460,11 @@ public class CameraMainService extends Service{
 			handleWhenCameraStartPreviewSuccess(cameraId,needRecord,needReverse);
 		}else{
 			getDesiredPreviewSizeAndQuality(cameraId);
-			setDisplayOrientation(cameraId);
+			setDisplayOrientation(cameraId);   //NotSure
 			
 			setCameraCommonParameters(cameraId);
 			
-			mCameras[cameraId].enableShutterSound(false);
+			mCameras[cameraId].enableShutterSound(false); //NotSure
 			mCameras[cameraId].setErrorCallback(new CameraErrorCallback(cameraId));
 			
 			try {
@@ -539,6 +547,35 @@ public class CameraMainService extends Service{
 		mCamerasPreviewing[cameraId] = false;
 	}
 	
+	private void changeBirdMode(boolean byUser){
+		mIsBirdMode = !mIsBirdMode;
+		int cameraId = CameraHolder.getGlobalCameraId();
+		int needMode = 0;
+		if(mIsBirdMode){
+			if(mCurrentPreviewMode == CameraMode.MODE_PREVIEW_CA){
+				needMode = CameraMode.MODE_PREVIEW_BF;
+			}else{
+				if(mCurrentPreviewMode >= 1 && mCurrentPreviewMode <= 4){
+					needMode = mCurrentPreviewMode+10;
+				}else{
+					Log.e(TAG,"something error when change bird mode!");
+					return;
+				}
+			}
+		}else{
+			if(mCurrentPreviewMode >= 11 && mCurrentPreviewMode <= 14){
+				needMode = mCurrentPreviewMode - 10;
+			}else{
+				Log.e(TAG,"something error when change bird mode!");
+				return;
+			}
+		}
+		changePreviewModeByModeIndex(cameraId, needMode,byUser);
+		if(mCameraActivityCallback != null){
+			mCameraActivityCallback.updateActivityBirdMode(mIsBirdMode);
+		}
+	}
+	
 	private void changeAllVideoLockState(){
 		Log.w(TAG_FILE, "change cureent state ["+mLock+"] to new state ["+!mLock+"]");
 		mLock = !mLock;
@@ -551,7 +588,7 @@ public class CameraMainService extends Service{
 			setVideoLockState(lock, CameraHolder.getUsbCameraId());
 			setVideoLockState(lock, CameraHolder.getCvbsCameraId());
 		}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
-			
+			setVideoLockState(lock, CameraHolder.getGlobalCameraId());
 		}else{
 			
 		}
@@ -621,7 +658,11 @@ public class CameraMainService extends Service{
 			mDesiredPreviewHeight[cameraId] = mDesiredVideoHeight[cameraId];
 			mDesiredPreviewWidth[cameraId] = mDesiredVideoWidth[cameraId];
 		}else if(cameraId == CameraHolder.getGlobalCameraId()){
-			
+			mProfiles[cameraId] = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
+			mDesiredVideoWidth[cameraId] = 1440;
+			mDesiredVideoHeight[cameraId] = 960;
+			mDesiredPreviewWidth[cameraId] = 0;
+			mDesiredPreviewHeight[cameraId] = 0;
 		}		
 		Log.w(TAG, "cameraId:"+cameraId+"  videoSize w:h = "+mDesiredVideoWidth[cameraId]+":"+mDesiredVideoHeight[cameraId]
 				+"previewSize w:h = "+mDesiredPreviewWidth[cameraId]+":"+mDesiredPreviewHeight[cameraId]);
@@ -632,38 +673,84 @@ public class CameraMainService extends Service{
 	private boolean initMediaRecord(int cameraId){
 		Log.w(TAG, "cameraId "+cameraId+ "  init recorder!");
         if (mCameras == null || mCameras[cameraId] == null) return false;
-        if(mProfiles[cameraId] != null){
-	        mMediaRecorders[cameraId] = new MediaRecorder();
-	        mCameras[cameraId].unlock();
-	        mMediaRecorders[cameraId].setCamera(mCameras[cameraId]);
-	        mMediaRecorders[cameraId].setVideoSource(MediaRecorder.VideoSource.CAMERA);
-	        //if(cameraId == CameraHolder.getUsbCameraId()){
-	        	mMediaRecorders[cameraId].setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-	        //}
-	        mProfiles[cameraId].fileFormat = MediaRecorder.OutputFormat.MPEG_4;
-	        mProfiles[cameraId].videoFrameHeight = mDesiredVideoHeight[cameraId];
-	        mProfiles[cameraId].videoFrameWidth = mDesiredVideoWidth[cameraId];
-	        mProfiles[cameraId].videoBitRate = 8*mProfiles[cameraId].videoFrameHeight*mProfiles[cameraId].videoFrameWidth;
-	        mMediaRecorders[cameraId].setProfile(mProfiles[cameraId]);	        
-	        Log.d(TAG,"videoFrameWidth=" + mDesiredVideoWidth[cameraId] + " height=" + mDesiredVideoHeight[cameraId]);              
-	       	        
+        if(cameraId == CameraHolder.getGlobalCameraId()){
+        	return initMediaRecord360(cameraId);
         }else{
-        	Log.e(TAG, "initMediaRecord failed "+cameraId);
-        	return false;
+	        if(mProfiles[cameraId] != null){
+		        mMediaRecorders[cameraId] = new MediaRecorder();
+		        mCameras[cameraId].unlock();
+		        mMediaRecorders[cameraId].setCamera(mCameras[cameraId]);
+		        mMediaRecorders[cameraId].setVideoSource(MediaRecorder.VideoSource.CAMERA);
+		        //if(cameraId == CameraHolder.getUsbCameraId()){
+		        	mMediaRecorders[cameraId].setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+		        //}
+		        mProfiles[cameraId].fileFormat = MediaRecorder.OutputFormat.MPEG_4;
+		        mProfiles[cameraId].videoFrameHeight = mDesiredVideoHeight[cameraId];
+		        mProfiles[cameraId].videoFrameWidth = mDesiredVideoWidth[cameraId];
+		        mProfiles[cameraId].videoBitRate = 8*mProfiles[cameraId].videoFrameHeight*mProfiles[cameraId].videoFrameWidth;
+		        mMediaRecorders[cameraId].setProfile(mProfiles[cameraId]);	        
+		        Log.d(TAG,"videoFrameWidth=" + mDesiredVideoWidth[cameraId] + " height=" + mDesiredVideoHeight[cameraId]);              
+		       	        
+	        }else{
+	        	Log.e(TAG, "initMediaRecord failed "+cameraId);
+	        	return false;
+	        }
+	        
+	        mMediaRecorders[cameraId].setOutputFile(generateVideoFilename(mProfiles[cameraId].fileFormat,cameraId));
+			mMediaRecorders[cameraId].setMaxDuration(getMediaRecorderDuration());
+	        mMediaRecorders[cameraId].setMaxFileSize(0);
+	        mMediaRecorders[cameraId].setOrientationHint(mDisplayOrientation);
+			try {
+	        	mMediaRecorders[cameraId].prepare();
+	        } catch (IOException e) {
+	            Log.e(TAG, "prepare failed for camera " + cameraId, e);
+	            releaseRecorder(cameraId);
+	            throw new RuntimeException(e);
+	        }
+	
+	        mMediaRecorders[cameraId].setOnErrorListener(new MediaRecorderErrorListener(cameraId));
+	        mMediaRecorders[cameraId].setOnInfoListener(new MediaRecorderInfoListener(cameraId));
+	        return true;
         }
-        
-        mMediaRecorders[cameraId].setOutputFile(generateVideoFilename(mProfiles[cameraId].fileFormat,cameraId));
-		mMediaRecorders[cameraId].setMaxDuration(getMediaRecorderDuration());
-        mMediaRecorders[cameraId].setMaxFileSize(0);
-        mMediaRecorders[cameraId].setOrientationHint(mDisplayOrientation);
-		try {
-        	mMediaRecorders[cameraId].prepare();
-        } catch (IOException e) {
-            Log.e(TAG, "prepare failed for camera " + cameraId, e);
-            releaseRecorder(cameraId);
-            throw new RuntimeException(e);
-        }
+	}
+	
+	private boolean initMediaRecord360(int cameraId){
+		AW360API.getInstance(mContext).setChannel(AW360API.getInstance(mContext).getChannel());
+        mMediaRecorders[cameraId] = new MediaRecorder();// 创建mediarecorder对象
+        // 解锁camera
+        mCameras[cameraId].unlock();
+        mMediaRecorders[cameraId].setCamera(mCameras[cameraId]);
+        mMediaRecorders[cameraId].setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        //mMediaRecorders[cameraId].setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        // 设置录制文件质量，格式，分辨率之类，这个全部包括了
+        mMediaRecorders[cameraId].setOutputFormat(mProfiles[cameraId].fileFormat);
+        Log.i(TAG, "----------setOutputFormat   =" + mProfiles[cameraId].fileFormat);
+        mMediaRecorders[cameraId].setVideoFrameRate(mProfiles[cameraId].videoFrameRate);
+        Log.i(TAG, "----------videoFrameRate   =" + mProfiles[cameraId].videoFrameRate);
+        mMediaRecorders[cameraId].setVideoSize(mDesiredVideoWidth[cameraId], mDesiredVideoHeight[cameraId]);
 
+        mMediaRecorders[cameraId].setVideoEncodingBitRate(mProfiles[cameraId].videoBitRate);
+        Log.i(TAG, "----------mProfile.videoBitRate = "+ mProfiles[cameraId].videoBitRate);
+        mMediaRecorders[cameraId].setVideoEncoder(mProfiles[cameraId].videoCodec);
+        Log.i(TAG, "----------videoCodec   =" + mProfiles[cameraId].videoCodec);
+        Log.i(TAG, "audioChannels=" + mProfiles[cameraId].audioChannels);
+        // 设置视频文件输出的路径
+        mMediaRecorders[cameraId].setOutputFile(generateVideoFilename(mProfiles[cameraId].fileFormat,cameraId));
+        mMediaRecorders[cameraId].setMaxDuration(getMediaRecorderDuration());
+        mMediaRecorders[cameraId].setMaxFileSize(0);
+        //mMediaRecorders[cameraId].setOrientationHint(mDisplayOrientation);
+        try {
+            // 准备录制
+            mMediaRecorders[cameraId].prepare();
+        } catch (IllegalStateException e) {
+            releaseRecorder(cameraId);
+            Log.e(TAG, "camera "+cameraId+"  prepare fail :"+e.getMessage());
+            return false;
+        } catch (IOException e) {
+            releaseRecorder(cameraId);
+            Log.e(TAG, "camera "+cameraId+"  prepare fail"+e.getMessage());
+            return false;
+        }
         mMediaRecorders[cameraId].setOnErrorListener(new MediaRecorderErrorListener(cameraId));
         mMediaRecorders[cameraId].setOnInfoListener(new MediaRecorderInfoListener(cameraId));
         return true;
@@ -687,8 +774,8 @@ public class CameraMainService extends Service{
 		if(mCurrentCameraMode == CameraMode.MODE_INT_USB_CVBS){
 			startVideoRecording(CameraHolder.getUsbCameraId());
 			startVideoRecording(CameraHolder.getCvbsCameraId());
-		}else{
-			startVideoRecording(CameraHolder.getUsbCameraId());
+		}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
+			startVideoRecording(CameraHolder.getGlobalCameraId());
 		}
 		if(mCameraActivityCallback != null){
 			mCameraActivityCallback.enableRecorder(true);
@@ -734,6 +821,10 @@ public class CameraMainService extends Service{
 	}
 	
 	private boolean startRecorder(int cameraId){
+		if(!mCamerasPreviewing[cameraId]){
+			Log.e(TAG,"camera "+cameraId +" start recorder before preview!");
+			return false;
+		}
 		if(mCamerasRecording[cameraId]){
 			Log.w(TAG, "camera "+cameraId+" start recorder yet!");
 			return true;
@@ -768,7 +859,9 @@ public class CameraMainService extends Service{
 		}
 		mHandler.removeMessages(MSG_UPDATE_SPACE);
 		mHandler.sendEmptyMessageDelayed(MSG_UPDATE_SPACE, 8000);
-		mCameras[cameraId].startWaterMark();
+		if(cameraId != CameraHolder.getGlobalCameraId()){
+			mCameras[cameraId].startWaterMark();
+		}
 		return true;
 	}
 	
@@ -778,12 +871,12 @@ public class CameraMainService extends Service{
 			return;
 		}
 		if(mCurrentCameraMode == CameraMode.MODE_INT_USB_CVBS){
-			stopRecorder(CameraHolder.getUsbCameraId());
-			
+			stopRecorder(CameraHolder.getUsbCameraId());			
 			stopRecorder(CameraHolder.getCvbsCameraId());
-			
+		}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
+			stopRecorder(CameraHolder.getGlobalCameraId());
 		}else{
-			stopRecorder(CameraHolder.getUsbCameraId());
+			
 		}
 		if(mCameraActivityCallback != null){
 			mCameraActivityCallback.enableRecorder(true);
@@ -807,7 +900,9 @@ public class CameraMainService extends Service{
 		if(CameraSettings.LOG_SWITCH){
 			Log.w(TAG, "camera "+cameraId+" stop recorder step 1");
 		}
-		mCameras[cameraId].stopWaterMark();
+		if(cameraId != CameraHolder.getGlobalCameraId()){
+			mCameras[cameraId].stopWaterMark();
+		}
 		if(CameraSettings.LOG_SWITCH){
 			Log.w(TAG, "camera "+cameraId+" stop recorder step 2");
 		}
@@ -899,10 +994,11 @@ public class CameraMainService extends Service{
 				if(mCurrentCameraMode == CameraMode.MODE_INT_USB_CVBS){
 					takePicture(CameraHolder.getUsbCameraId());
 					takePicture(CameraHolder.getCvbsCameraId());
+				}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
+					Log.w(TAG, "Current Version not support take picture!");
 				}else{
-					takePicture(CameraHolder.getUsbCameraId());
+					
 				}
-				
 			}
 		}, false);		
 		
@@ -1428,8 +1524,15 @@ private void goToDeleteLockFiles(boolean displayWindow){
 		
 	}
 	
-	private void setCameraCommonParameters(int cameraId){
-		if(mCameras==null || mCameras[cameraId] == null)return;
+	/** 
+	* @Title: setCameraCommonParameters 
+	* @Description:  360全景未设置
+	* @param @param cameraId 
+	* @return void
+	* @throws 
+	*/
+	private void setCameraCommonParameters(int cameraId){  
+		if(mCameras==null || mCameras[cameraId] == null || cameraId == CameraHolder.getGlobalCameraId())return;
 		mParameters[cameraId] = mCameras[cameraId].getParameters();
 		//previewSize
 		mParameters[cameraId].setPreviewSize(mDesiredPreviewWidth[cameraId],mDesiredPreviewHeight[cameraId]);
@@ -1529,29 +1632,60 @@ private void goToDeleteLockFiles(boolean displayWindow){
 	}
 	
 	private void dispatchReverseLeftRightSteer(){
-		if(mReverseState){
-			handleReverseOn(CameraHolder.getCvbsCameraId());
-		}else{
-			if(mCurrentLeftRightStateValue == CameraMode.MODE_DETECT_LEFT){
-				handleReverseOn(CameraHolder.getLeftCameraId());
-			}else if(mCurrentLeftRightStateValue == CameraMode.MODE_DETECT_RIGHT){
-				handleReverseOn(CameraHolder.getRightCameraId());
+		if(mCurrentCameraMode == CameraMode.MODE_INT_USB_CVBS){
+			if(mReverseState){
+				handleReverseOn(CameraHolder.getCvbsCameraId());
 			}else{
-				handleReverseOver();
+				if(mCurrentLeftRightStateValue == CameraMode.MODE_DETECT_LEFT){
+					handleReverseOn(CameraHolder.getLeftCameraId());
+				}else if(mCurrentLeftRightStateValue == CameraMode.MODE_DETECT_RIGHT){
+					handleReverseOn(CameraHolder.getRightCameraId());
+				}else{
+					handleReverseOver();
+				}
 			}
+		}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
+			if(mReverseState){
+				changePreviewModeByModeIndex(CameraHolder.getGlobalCameraId(), CameraMode.MODE_PREVIEW_BB, false);
+				handleReverseOn(CameraHolder.getGlobalCameraId());
+			}else{
+				if(mCurrentLeftRightStateValue == CameraMode.MODE_DETECT_LEFT){
+					changePreviewModeByModeIndex(CameraHolder.getGlobalCameraId(), CameraMode.MODE_PREVIEW_BL, false);
+					handleReverseOn(CameraHolder.getGlobalCameraId());
+				}else if(mCurrentLeftRightStateValue == CameraMode.MODE_DETECT_RIGHT){
+					changePreviewModeByModeIndex(CameraHolder.getGlobalCameraId(), CameraMode.MODE_PREVIEW_BR, false);
+					handleReverseOn(CameraHolder.getGlobalCameraId());
+				}else{
+					handleReverseOver();
+				}
+			}
+		}else{
+			
 		}
 	}
 	
 	private void handleReverseOn(int cameraId){
 		if(mReverseLayout != null){
-			mReverseLayout.showReverseWindow(cameraId);
+			if(mCurrentCameraMode == CameraMode.MODE_INT_USB_CVBS){
+				mReverseLayout.showReverseWindow(cameraId);
+			}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
+				mReverseLayout.showReverseWindow360(cameraId);
+			}else{
+				
+			}
 			setBackCarBacklight(true);
 		}
 	}
 	
 	private void handleReverseOver(){
 		if(mReverseLayout!=null){
-			mReverseLayout.hideReverseWindow();
+			if(mCurrentCameraMode == CameraMode.MODE_INT_USB_CVBS){
+				mReverseLayout.hideReverseWindow();
+			}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
+				mReverseLayout.hideReverseWindow360();
+			}else{
+				
+			}
 			setScreenBacklight(false);
 			setBackCarBacklight(false);
 			setScreenBacklight(true);
@@ -1585,12 +1719,20 @@ private void goToDeleteLockFiles(boolean displayWindow){
 		Log.w(TAG, "camera "+cameraId+" start preview success, needRecord:"+needRecord+";needReverse:"+needReverse);
 		if(needReverse){ 
 			mHandler.sendEmptyMessage(MSG_DISPATCH_REVRSE_LEFT_RIGHT_STEER);
+		}else{
+			if(cameraId == CameraHolder.getGlobalCameraId()){
+				if(mCameraActivityCallback != null){
+	    			mCameraActivityCallback.updateActivityPreviewMode(MyApplication.getLastPreviewMode());
+	    		}
+				changePreviewModeByModeIndex(cameraId, MyApplication.getLastPreviewMode(), false);
+			}
 		}
 		if(needRecord){
 			startVideoRecording(cameraId);
 		}else{
 			if(mCameraActivityCallback != null){
 				mCameraActivityCallback.updateActivityUi(mMediaRecorderRecording, cameraId, mCamerasRecording[cameraId], mLock, mCurrentTimeText);
+				mCameraActivityCallback.updateActivityBirdMode(mIsBirdMode);
 			}
 		}
 	}
@@ -1619,6 +1761,12 @@ private void goToDeleteLockFiles(boolean displayWindow){
 	
 	private void handleWhenReverseWindowHide(int cameraId){
 		setSurfaceTexture(mSurfaceTextures[cameraId], cameraId, false, -1);
+	}
+	
+	private void handleWhenReverseWindowHide360(int cameraId){
+		int lastModeSetUser = MyApplication.getLastPreviewMode();
+		changePreviewModeByModeIndex(cameraId, lastModeSetUser, false);
+		setSurfaceTexture360(mSurfaceTextures[cameraId], cameraId,false, true);
 	}
 	
 	private void handleUsbCameraPlugIn(){
@@ -1716,27 +1864,26 @@ private void goToDeleteLockFiles(boolean displayWindow){
     private String generateVideoFilename(int outputFileFormat, int cameraId) {
             long dateTaken = System.currentTimeMillis();
             String title;
-            dateTime = SystemClock.uptimeMillis();
-            if(mRecordingLock){
+            /*if(mRecordingLock){
                     mCurrentLockIndex = (mCurrentLockIndex +1)%LIMIT_INDEX_NUM;
                     title = createVideoName(dateTaken, cameraId, true, mCurrentLockIndex);
-            }else{
+            }else{*/
                     mCurrentCommonIndex = (mCurrentCommonIndex +1)%LIMIT_INDEX_NUM;
                     title = createVideoName(dateTaken, cameraId, false, mCurrentCommonIndex);
-            }
+           /* }*/
             String filename = title + convertOutputFormatToFileExt(outputFileFormat);
             String path = null;
-            if(mRecordingLock) {
+            /*if(mRecordingLock) {
                     path = mCurrentRootPath + "/"+CameraSettings.DIR_LOCK+'/' + filename;
-            } else {
-                    if(filename.contains("VIDC_")) {
-                            path = mCurrentRootPath + "/"+CameraSettings.DIR_CVBS+'/' + filename;
-                    }else if(filename.contains("VIDU_")) {
+            } else {*/
+                    if(filename.contains("VIDU_")) {
                     		path = mCurrentRootPath + "/"+CameraSettings.DIR_USB+'/' + filename;
-                    }else{
-                            path = mCurrentRootPath + "/"+CameraSettings.DIR_360+'/' + filename;
+                    }else if(filename.contains("VIDG_")) {
+                        	path = mCurrentRootPath + "/"+CameraSettings.DIR_360+'/' + filename;
+                    }else {
+                            path = mCurrentRootPath + "/"+CameraSettings.DIR_CVBS+'/' + filename;
                     }
-            }
+            /*}*/
             if(mCurrentPaths[cameraId] != null){
             	mLastPaths[cameraId] = mCurrentPaths[cameraId];
             }
@@ -2082,6 +2229,33 @@ private void goToDeleteLockFiles(boolean displayWindow){
           }
     }
     
+    private void setSurfaceTexture360(SurfaceTexture texture,int cameraId,boolean replace,boolean reset){
+    	if(cameraId != CameraHolder.getGlobalCameraId()){
+    		Log.e(TAG, "this method is for 360 only!");
+    		return;
+    	}
+    	if(replace){
+    		if(mSurfaceTextures[cameraId] != null){
+    			mSurfaceTextures[cameraId].release();
+    		}
+    		mSurfaceTextures[cameraId] = texture;
+    	}
+    	if(mCameras[cameraId] == null || texture == null){
+    		Log.e(TAG, "360 camera not open or texture is null");
+    		return;
+    	}
+    	Log.d(TAG, "setTexture for 360, replace:"+replace+"; reset:"+reset);
+    	if(reset){
+	    	mCameras[cameraId].stopRender();
+			try{
+				mCameras[cameraId].setPreviewTexture(texture);
+			}catch(Exception e){
+				Log.e(TAG, "setTexture failed!");
+			}
+			mCameras[cameraId].startRender();
+    	}    	
+    }
+    
     private void setSurfaceTexture(SurfaceTexture texture,int cameraId,boolean replace,int lastCameraId){ 
     	Log.w(TAG, "texture "+(texture == null ? "is null!":"not null")+"; currentCameraId: "+cameraId
     			+" ;lastCameraId:"+lastCameraId+"; replace: "+replace);
@@ -2121,6 +2295,63 @@ private void goToDeleteLockFiles(boolean displayWindow){
     	}
     }
     
+    private void changePreviewModeByModeIndex(int cameraId,int mode,boolean byUser){
+    	Log.w(TAG, "cameraId:"+cameraId+"; mode: "+mode+"; byUser: "+byUser);
+    	if(mCameras[cameraId] == null ||cameraId != CameraHolder.getGlobalCameraId() 
+    			|| !mCamerasPreviewing[cameraId]){
+    		Log.e(TAG, "change previewMode bedore start preview!");
+    		return;
+    	}
+    	if(mCurrentPreviewMode == mode){
+    		Log.d(TAG, "the same preview mode,so do nothing!");
+    		return;
+    	}
+    	mCurrentPreviewMode = mode;
+    	if(byUser){
+    		MyApplication.setCurrentPreviewMode(mode);
+    		if(mCameraActivityCallback != null){
+    			mCameraActivityCallback.updateActivityPreviewMode(mCurrentPreviewMode);
+    		}
+    	}
+    	switch (mode) {
+		case CameraMode.MODE_PREVIEW_CA:
+			AW360API.getInstance(mContext).previewCAMode();			
+			break;
+		case CameraMode.MODE_PREVIEW_CF:
+			AW360API.getInstance(mContext).previewCFMode();
+			break;
+		case CameraMode.MODE_PREVIEW_CB:
+			AW360API.getInstance(mContext).previewCBMode();
+			break;
+		case CameraMode.MODE_PREVIEW_CL:
+			AW360API.getInstance(mContext).previewCLMode();
+			break;
+		case CameraMode.MODE_PREVIEW_CR:
+			AW360API.getInstance(mContext).previewCRMode();
+			break;
+		case CameraMode.MODE_PREVIEW_BF:
+			AW360API.getInstance(mContext).previewBFMode();
+			break;
+		case CameraMode.MODE_PREVIEW_BB:
+			testBack = !testBack;
+			if(testBack){
+				AW360API.getInstance(mContext).setWheelAngle(10);
+			}else{
+				AW360API.getInstance(mContext).setWheelAngle(-10);
+			}
+			AW360API.getInstance(mContext).previewBBMode();
+			break;
+		case CameraMode.MODE_PREVIEW_BL:
+			AW360API.getInstance(mContext).previewBLMode();
+			break;
+		case CameraMode.MODE_PREVIEW_BR:
+			AW360API.getInstance(mContext).previewBRMode();
+			break;
+		default:
+			break;
+		}
+    }
+    
     private void registerCallback(CameraActivityCallback callback){
     	mCameraActivityCallback = callback;
     }
@@ -2152,6 +2383,12 @@ private void goToDeleteLockFiles(boolean displayWindow){
         Intent intent = new Intent("com.luyuan.backar.backlight");
         intent.putExtra("screen", onOff);
         sendBroadcast(intent);
+    }
+    
+    private void activityExit(){
+    	if(mMediaRecorderRecording){
+    		
+    	}
     }
     
     private void initCurrentIndexNum(){
@@ -2341,6 +2578,11 @@ private void goToDeleteLockFiles(boolean displayWindow){
 			mService.get().setSurfaceTexture(surfaceTexture, cameraId, replace,-1);
 			
 		}
+		
+		public void postSurfaceTexture360(SurfaceTexture surfaceTexture,int cameraId,boolean replace,boolean reset) {
+			mService.get().setSurfaceTexture360(surfaceTexture, cameraId,replace, reset);
+			
+		}
 
 		public boolean isRecording(){
 			return mService.get().mMediaRecorderRecording;
@@ -2352,6 +2594,22 @@ private void goToDeleteLockFiles(boolean displayWindow){
 		
 		public void changeLockState(){
 			mService.get().changeAllVideoLockState();
+		}
+		
+		public boolean isBirdMode(){
+			return mService.get().mIsBirdMode;
+		}
+		
+		public void changeBirdModeByUser(boolean byUser){
+			mService.get().changeBirdMode(byUser);
+		}
+		
+		public void changePreviewModeByUser(int previewMode,boolean byUser){
+			mService.get().changePreviewModeByModeIndex(CameraHolder.getGlobalCameraId(),previewMode,byUser);
+		}
+		
+		public void activityExits(){
+			mService.get().activityExit();
 		}
     }
     
@@ -2365,6 +2623,17 @@ private void goToDeleteLockFiles(boolean displayWindow){
 		@Override
 		public void hideReverseWindow(int lastCameraId) {
 			handleWhenReverseWindowHide(lastCameraId);
+		}
+
+		@Override
+		public void setTexture360(SurfaceTexture surface,int cameraId,
+				boolean replace, boolean reset) {
+			setSurfaceTexture360(surface, cameraId, replace, reset);
+		}
+
+		@Override
+		public void hideReverseWindow360(int lastCameraId) {
+			handleWhenReverseWindowHide360(lastCameraId);
 		}
     	
     }
@@ -2579,13 +2848,31 @@ private void goToDeleteLockFiles(boolean displayWindow){
 				startPreview((Integer)msg.obj,msg.arg1==1,msg.arg2==1);
 				break;
 			case MSG_OPEN_CAMERA_BY_REVERSE:
-				openCamera(CameraHolder.getCvbsCameraId(),false,true);			
+				if(mCurrentCameraMode == CameraMode.MODE_INT_USB_CVBS){
+					openCamera(CameraHolder.getCvbsCameraId(),false,true);	
+				}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
+					openCamera(CameraHolder.getGlobalCameraId(), false, true);
+				}else{
+					
+				}
 				break;
 			case MSG_OPEN_CAMERA_BY_LEFT:
-				openCamera(CameraHolder.getLeftCameraId(), false, true);
+				if(mCurrentCameraMode == CameraMode.MODE_INT_USB_CVBS){
+					openCamera(CameraHolder.getLeftCameraId(), false, true);
+				}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
+					openCamera(CameraHolder.getGlobalCameraId(), false, true);
+				}else{
+					
+				}
 				break;
 			case MSG_OPEN_CAMERA_BY_RIGHT:
-				openCamera(CameraHolder.getRightCameraId(), false, true);
+				if(mCurrentCameraMode == CameraMode.MODE_INT_USB_CVBS){
+					openCamera(CameraHolder.getRightCameraId(), false, true);
+				}else if(mCurrentCameraMode == CameraMode.MODE_INT_360){
+					openCamera(CameraHolder.getGlobalCameraId(), false, true);
+				}else{
+					
+				}
 				break;
 			case MSG_START_RECORDING:
 				startAllVideoRecording();

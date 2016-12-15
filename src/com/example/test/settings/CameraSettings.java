@@ -30,7 +30,7 @@ public class CameraSettings {
 	
 	public static int getCurrentCameraMode(){
 		int re = 0;
-		String mode = SystemProperties.get(KEY_CAMERA_MODE,CameraMode.MODE_STR_USB_CVBS);
+		String mode = SystemProperties.get(KEY_CAMERA_MODE,CameraMode.MODE_STR_360);
 		if(mode.equals(CameraMode.MODE_STR_USB_CVBS)){
 			re = CameraMode.MODE_INT_USB_CVBS;
 		}else if(mode.equals(CameraMode.MODE_STR_USB_360)){
